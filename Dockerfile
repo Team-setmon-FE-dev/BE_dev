@@ -1,4 +1,4 @@
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jdk-jammy
 
 # FFmpeg 및 필수 패키지 설치
 RUN apt-get update && \
