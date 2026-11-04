@@ -8,7 +8,7 @@ import java.time.Instant;
 public record CreateClipRequest(
         @NotBlank String videoKey,
         @NotBlank String thumbKey,
-        @Schema(description = "2000~4000", example = "3200") @NotNull Integer durationMs,
+        @Schema(description = "1000~2000", example = "1500") @NotNull Integer durationMs,
         @Schema(description = "촬영 시각(UTC)", example = "2026-11-04T05:00:03Z") @NotNull Instant recordedAt
 ) {
 }

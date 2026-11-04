@@ -102,4 +102,17 @@ public class DailyVlog extends BaseTimeEntity {
         this.failReason = reason;
         this.retryCount++;
     }
+
+    /** 그날 클립이 모두 지워진 경우: 결과를 비우고 생성 전 상태로 */
+    public void clear() {
+        this.status = VlogStatus.NONE;
+        this.videoKey = null;
+        this.thumbKey = null;
+        this.failReason = null;
+        this.stale = false;
+    }
+
+    public boolean isUpToDate() {
+        return status == VlogStatus.DONE && !stale;
+    }
 }

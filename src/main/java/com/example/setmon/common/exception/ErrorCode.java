@@ -24,10 +24,12 @@ public enum ErrorCode {
 
     // 클립
     PAST_SLOT(HttpStatus.BAD_REQUEST, "지금 시간대에만 올릴 수 있습니다."),
-    CLIP_TOO_SHORT(HttpStatus.BAD_REQUEST, "2초 이상 찍어주세요."),
-    CLIP_TOO_LONG(HttpStatus.BAD_REQUEST, "4초 이하로 찍어주세요."),
+    CLIP_TOO_SHORT(HttpStatus.BAD_REQUEST, "1초 이상 찍어주세요."),
+    CLIP_TOO_LONG(HttpStatus.BAD_REQUEST, "2초 이하로 찍어주세요."),
     INVALID_UPLOAD_KEY(HttpStatus.BAD_REQUEST, "업로드 키가 올바르지 않습니다."),
     CLIP_NOT_FOUND(HttpStatus.NOT_FOUND, "클립을 찾을 수 없습니다."),
+    FUTURE_RECORDED_AT(HttpStatus.BAD_REQUEST, "촬영 시각이 현재보다 미래입니다."),
+    CLIP_UPLOAD_CONFLICT(HttpStatus.CONFLICT, "같은 시간대에 동시에 업로드되었습니다. 다시 시도해주세요."),
 
     // 브이로그
     NO_CLIPS(HttpStatus.BAD_REQUEST, "오늘 올린 클립이 없습니다."),

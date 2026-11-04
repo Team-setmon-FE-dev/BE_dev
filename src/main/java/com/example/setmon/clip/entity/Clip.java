@@ -21,8 +21,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Clip extends BaseTimeEntity {
 
-    public static final int MIN_DURATION_MS = 2000;
-    public static final int MAX_DURATION_MS = 4000;
+    public static final int MIN_DURATION_MS = 1000;
+    public static final int MAX_DURATION_MS = 2000;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

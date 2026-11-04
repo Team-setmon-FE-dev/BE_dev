@@ -1,12 +1,9 @@
 package com.example.setmon.storage;
 
+import java.nio.file.Path;
 import java.time.Duration;
 
-/**
- * S3 접근 (2주차 구현).
- * 키 규칙: users/{userId}/clips/{yyyy-MM-dd}/{uuid}.mp4|jpg, users/{userId}/vlogs/{yyyy-MM-dd}/{uuid}.mp4|jpg
- * → 탈퇴 시 users/{userId}/ 접두어만 지우면 된다.
- */
+/** 파일 저장소(S3). 키 규칙은 {@link StorageKeys}. */
 public interface StorageService {
 
     String presignPut(String key, String contentType, Duration ttl);
@@ -14,6 +11,10 @@ public interface StorageService {
     String presignGet(String key, Duration ttl);
 
     boolean exists(String key);
+
+    void upload(String key, Path file, String contentType);
+
+    void download(String key, Path target);
 
     void delete(String key);
 

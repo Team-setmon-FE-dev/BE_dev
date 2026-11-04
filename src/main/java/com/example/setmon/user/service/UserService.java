@@ -9,6 +9,11 @@ import com.example.setmon.user.entity.DeviceToken;
 import com.example.setmon.user.entity.User;
 import com.example.setmon.user.repository.DeviceTokenRepository;
 import com.example.setmon.user.repository.UserRepository;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +30,15 @@ public class UserService {
     public User getUser(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    public Optional<User> findByFriendCode(String friendCode) {
+        return userRepository.findByFriendCode(friendCode);
+    }
+
+    public Map<Long, User> getUsersByIds(Collection<Long> ids) {
+        return userRepository.findAllById(ids).stream()
+                .collect(Collectors.toMap(User::getId, Function.identity()));
     }
 
     public MeResponse getMe(Long userId) {
@@ -49,5 +63,10 @@ public class UserService {
                 () -> deviceTokenRepository.save(DeviceToken.create(userId, token)));
     }
 
-    // TODO(3주차): 탈퇴 — S3(users/{id}/), 친구 관계, 기기 토큰, 클립·브이로그, 사용자 삭제
+    /** 탈퇴용: 기기 토큰과 사용자 행 삭제 (나머지는 WithdrawService가 순서대로 처리) */
+    @Transactional
+    public void deleteAccount(Long userId) {
+        deviceTokenRepository.deleteAllOfUser(userId);
+        userRepository.delete(getUser(userId));
+    }
 }

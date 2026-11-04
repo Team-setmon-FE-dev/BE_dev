@@ -1,11 +1,10 @@
 package com.example.setmon.user.controller;
 
-import com.example.setmon.common.exception.BusinessException;
-import com.example.setmon.common.exception.ErrorCode;
 import com.example.setmon.user.dto.DeviceTokenRequest;
 import com.example.setmon.user.dto.MeResponse;
 import com.example.setmon.user.dto.UpdateSettingsRequest;
 import com.example.setmon.user.service.UserService;
+import com.example.setmon.user.service.WithdrawService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
+    private final WithdrawService withdrawService;
 
     @Operation(summary = "내 정보 + 총 기록 일수 (S-12)")
     @GetMapping
@@ -35,11 +35,11 @@ public class UserController {
         return userService.getMe(userId);
     }
 
-    @Operation(summary = "[미구현] 탈퇴 (F-04)", description = "클립·브이로그 S3 파일, 친구 관계, 기기 토큰, 사용자 정보 모두 삭제. 204")
+    @Operation(summary = "탈퇴 (F-04)", description = "클립·브이로그(S3 포함), 친구 관계·요청, 기기 토큰, 사용자 정보 모두 삭제. 204. 앱은 토큰을 지우고 로그인 화면으로")
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void withdraw(@Parameter(hidden = true) @AuthenticationPrincipal Long userId) {
-        throw new BusinessException(ErrorCode.NOT_IMPLEMENTED);
+        withdrawService.withdraw(userId);
     }
 
     @Operation(summary = "알림 설정 (F-13, F-28)", description = "에러: INVALID_INPUT(시작 > 끝)")
