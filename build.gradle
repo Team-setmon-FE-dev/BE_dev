@@ -45,6 +45,11 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
+// 실행용 jar 하나만 만든다 (*-plain.jar 생성 안 함 → Dockerfile COPY 충돌 방지)
+tasks.named('jar') {
+	enabled = false
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
