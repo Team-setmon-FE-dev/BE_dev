@@ -1,6 +1,13 @@
 package com.example.setmon.vlog.worker;
 
+import org.springframework.stereotype.Component;
+
+import java.io.File;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * FFmpeg 합성 모듈 (B 구현). 확정 규격:
