@@ -53,8 +53,20 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            mkdir -p /home/ubuntu/app
             cd /home/ubuntu/app
             export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
+            
+            # 1. 최신 이미지 다운로드
             docker compose pull
-            docker compose up -d --remove-orphans
+            
+            # 2. 7일 전 수동으로 떠있던 8080 포트 구버전 컨테이너 강제 중지 및 삭제
+            docker stop setmon-app || true
+            docker rm setmon-app || true
+            docker compose down || true
+            
+            # 3. 최신 이미지 기반으로 강제 재생성 배포
+            docker compose up -d --force-recreate --remove-orphans
+            
+            # 4. 이전 구버전 Docker 이미지 용량 정리
             docker image prune -f
