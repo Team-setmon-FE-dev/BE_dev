@@ -45,6 +45,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "docker-compose.yml"
           target: "/home/ubuntu/app"
+          strip_components: 1
 
       - name: EC2 SSH 접속 및 배포 실행
         uses: appleboy/ssh-action@v1.0.3
@@ -53,20 +54,30 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            mkdir -p /home/ubuntu/app
             cd /home/ubuntu/app
+            
+            # 1. docker-compose.yml 존재 여부 확인
+            if [ ! -f "docker-compose.yml" ]; then
+              echo " Error: docker-compose.yml 파일이 /home/ubuntu/app 경로에 없습니다."
+              exit 1
+            fi
+            
+            # 2. Docker 이미지 이름에 사용될 환경변수 설정
             export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
             
-            # 1. 최신 이미지 다운로드
+            echo " 최신 Docker 이미지 수동 Pull 중..."
             docker compose pull
             
-            # 2. 7일 전 수동으로 떠있던 8080 포트 구버전 컨테이너 강제 중지 및 삭제
+            echo " 기존 구버전 컨테이너 중지 및 삭제..."
             docker stop setmon-app || true
             docker rm setmon-app || true
             docker compose down || true
             
-            # 3. 최신 이미지 기반으로 강제 재생성 배포
-            docker compose up -d --force-recreate --remove-orphans
+            echo " 최신 컨테이너 구동..."
+            docker compose up -d --remove-orphans
             
-            # 4. 이전 구버전 Docker 이미지 용량 정리
+            echo " 사용하지 않는 구버전 이미지 정리..."
             docker image prune -f
+            
+            echo " 최종 컨테이너 상태 확인:"
+            docker ps -a
