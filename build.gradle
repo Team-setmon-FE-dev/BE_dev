@@ -34,7 +34,7 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
 	runtimeOnly 'io.jsonwebtoken:jjwt-gson:0.12.6'
 
-	runtimeOnly 'com.mysql:mysql-connector-j'
+	runtimeOnly 'com.mysql:mysql-connector-j:8.0.33'
 
 	implementation platform('software.amazon.awssdk:bom:2.31.0')
 	implementation 'software.amazon.awssdk:s3'
@@ -55,4 +55,19 @@ tasks.named('jar') {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+// 로컬 실행: 환경변수를 JVM 시스템 프로퍼티로 포워딩
+bootRun {
+	// gradle.properties 의 systemProp.* 값을 Spring 앱 JVM으로 전달
+	systemProperties = [
+		'spring.datasource.url'      : System.getProperty('DB_URL',            'jdbc:mysql://localhost:3306/setmon?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8'),
+		'spring.datasource.username' : System.getProperty('DB_USERNAME',       'root'),
+		'spring.datasource.password' : System.getProperty('DB_PASSWORD',       'rootpassword'),
+		'jwt.secret'                 : System.getProperty('JWT_SECRET',         ''),
+		'storage.bucket'             : System.getProperty('S3_BUCKET',          ''),
+		'storage.region'             : System.getProperty('AWS_REGION',         'ap-northeast-2'),
+		'storage.access-key-id'      : System.getProperty('AWS_ACCESS_KEY_ID',  ''),
+		'storage.secret-access-key'  : System.getProperty('AWS_SECRET_ACCESS_KEY', ''),
+	]
 }
