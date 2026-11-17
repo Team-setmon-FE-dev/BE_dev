@@ -23,6 +23,12 @@ repositories {
 	mavenCentral()
 }
 
+// firebase-admin 9.4.3 은 httpclient5 5.3.1 / httpcore5 5.2.4 로 만들어졌다.
+// Spring Boot 가 이를 5.6.x / 5.4.x 로 올리면 FCM 발송이 "Not in GZIP format" 으로 전부 실패한다(3주차, B 확인).
+// firebase-admin 을 올릴 때 이 두 줄도 같이 확인할 것.
+ext['httpclient5.version'] = '5.3.1'
+ext['httpcore5.version'] = '5.2.4'
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
