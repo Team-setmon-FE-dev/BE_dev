@@ -3,6 +3,8 @@ package com.example.setmon.vlog.worker;
 import com.example.setmon.clip.entity.Clip;
 import com.example.setmon.clip.service.ClipService;
 import com.example.setmon.common.config.TimeConfig;
+import com.example.setmon.notification.NotificationType;
+import com.example.setmon.notification.PushSender;
 import com.example.setmon.storage.StorageKeys;
 import com.example.setmon.storage.StorageService;
 import java.io.IOException;
@@ -35,6 +37,7 @@ public class VlogWorker {
     private final ClipService clipService;
     private final StorageService storageService;
     private final VlogComposer composer;
+    private final PushSender pushSender;
 
     private static final DateTimeFormatter TIME_LABEL = DateTimeFormatter.ofPattern("HH:mm");
 
@@ -81,8 +84,13 @@ public class VlogWorker {
             storageService.upload(thumbKey, Path.of(result.thumbnailPath()), ClipService.THUMB_CONTENT_TYPE);
             jobService.complete(job.vlogId(), videoKey, thumbKey);
             log.info("브이로그 완성 vlogId={} userId={} date={} clips={}", job.vlogId(), job.userId(), job.date(), clips.size());
-            // TODO(3주차, B): 완성 알림 발송
-            //   pushSender.sendToUser(job.userId(), NotificationType.VLOG_DONE, job.date())
+            // 완성 알림 (3주차, B). 켜고 끄기는 PushSender가 확인한다.
+            // 알림이 실패해도 이미 DONE인 브이로그를 FAILED로 바꾸면 안 되므로 여기서 따로 잡는다
+            try {
+                pushSender.sendToUser(job.userId(), NotificationType.VLOG_DONE, job.date());
+            } catch (Exception e) {
+                log.warn("완성 알림 발송 실패 vlogId={}", job.vlogId(), e);
+            }
         } catch (Exception e) {
             log.error("브이로그 생성 실패 vlogId={}", job.vlogId(), e);
             try {
