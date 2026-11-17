@@ -82,6 +82,7 @@ public class VlogWorker {
             jobService.complete(job.vlogId(), videoKey, thumbKey);
             log.info("브이로그 완성 vlogId={} userId={} date={} clips={}", job.vlogId(), job.userId(), job.date(), clips.size());
             // TODO(3주차, B): 완성 알림 발송
+            //   pushSender.sendToUser(job.userId(), NotificationType.VLOG_DONE, job.date())
         } catch (Exception e) {
             log.error("브이로그 생성 실패 vlogId={}", job.vlogId(), e);
             try {

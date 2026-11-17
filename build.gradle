@@ -39,6 +39,8 @@ dependencies {
 	implementation platform('software.amazon.awssdk:bom:2.31.0')
 	implementation 'software.amazon.awssdk:s3'
 
+	implementation 'com.google.firebase:firebase-admin:9.4.3'
+
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
@@ -69,5 +71,6 @@ bootRun {
 		'storage.region'             : System.getProperty('AWS_REGION',         'ap-northeast-2'),
 		'storage.access-key-id'      : System.getProperty('AWS_ACCESS_KEY_ID',  ''),
 		'storage.secret-access-key'  : System.getProperty('AWS_SECRET_ACCESS_KEY', ''),
+		'fcm.key-path'               : System.getProperty('FIREBASE_KEY_PATH',  ''),
 	]
 }
