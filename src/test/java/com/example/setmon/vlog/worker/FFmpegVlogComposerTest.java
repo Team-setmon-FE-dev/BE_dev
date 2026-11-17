@@ -1,13 +1,29 @@
 package com.example.setmon.vlog.worker;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 class FFmpegVlogComposerTest {
+
+    /** ffmpeg가 PATH에 없는 환경(로컬 PC 등)에서는 실패 대신 건너뛴다. */
+    @BeforeAll
+    static void requireFfmpeg() {
+        boolean available;
+        try {
+            Process p = new ProcessBuilder("ffmpeg", "-version").redirectErrorStream(true).start();
+            p.getInputStream().transferTo(java.io.OutputStream.nullOutputStream());
+            available = p.waitFor() == 0;
+        } catch (Exception e) {
+            available = false;
+        }
+        assumeTrue(available, "ffmpeg not found in PATH");
+    }
 
     @Test
     void testComposeSuccess() throws Exception {
